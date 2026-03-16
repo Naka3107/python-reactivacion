@@ -1,11 +1,14 @@
 import json
+import dia06
 
 class Oferta:
-    def __init__(self, empresa, puesto, salario, tecnologias):
+    def __init__(self, empresa, puesto, salario, tecnologias, pais="", capital=""):
         self.empresa = empresa
         self.puesto = puesto
         self.salario = salario
         self.tecnologias = tecnologias
+        self.pais = pais
+        self.capital = capital
 
     def mostrar(self):
         print(f"--- {self.empresa} ---")
@@ -58,8 +61,17 @@ class BolsaDeEmpleo:
         self.ofertas = []
         self.programadores = []
     
-    def agregar_oferta(self, oferta):
-        self.ofertas.append(oferta)
+    def agregar_oferta(self, oferta, pais):
+        print(f"Añadiendo oferta en {pais}...")
+        pais_oferta = dia06.buscar_pais(pais)
+        if(pais_oferta):
+            print(f"País verificado: {pais_oferta["nombre"]} | Capital: {pais_oferta["capital"]} | Región: {pais_oferta["region"]}")
+            oferta.pais = pais_oferta["nombre"]
+            oferta.capital = pais_oferta["capital"]
+            self.ofertas.append(oferta)
+        else:
+            print("País no encontrado - oferta no añadida")
+
     
     def agregar_programador(self, programador):
         self.programadores.append(programador)
@@ -93,7 +105,8 @@ class BolsaDeEmpleo:
                 ofertas = json.load(archivo)
                 for oferta in ofertas:
                     #self.agregar_oferta(Oferta(oferta["empresa"], oferta["puesto"], oferta["salario"], oferta["tecnologias"])) ## Manualmente tienes que poner todos los atributos
-                    self.agregar_oferta(Oferta(**oferta)) ## Cuando todos los atributos coinciden, automáticamente lo convierte a objeto       
+                    #self.agregar_oferta(Oferta(**oferta),oferta["pais"]) ## Cuando todos los atributos coinciden, automáticamente lo convierte a objeto       
+                    self.ofertas.append(Oferta(**oferta))  # Carga directa, sin API       
         except FileNotFoundError:
             print("Archivo no encontrado")
     
@@ -132,13 +145,13 @@ class BolsaDeEmpleo:
             print("Archivo no encontrado")        
 
 bolsa = BolsaDeEmpleo()
-bolsa.agregar_oferta(Oferta("Raona", "Python Dev", 26000, ["Python", "Git"]))
-bolsa.agregar_oferta(Oferta("Sopra", "Backend Junior", 22000, ["Java", "SQL"]))
+bolsa.agregar_oferta(Oferta("Raona", "Python Dev", 26000, ["Python", "Git"]),"Germany")
+bolsa.agregar_oferta(Oferta("Sopra", "Backend Junior", 22000, ["Java", "SQL"]),"France")
 
-bolsa.guardar("ofertas.json")
+bolsa.guardar("ofertas_enriquecidas.json")
 
 bolsa2 = BolsaDeEmpleo()
-bolsa2.cargar("ofertas.json")
+bolsa2.cargar("ofertas_enriquecidas.json")
 #for oferta in bolsa2.ofertas:
 #    oferta.mostrar()
 
