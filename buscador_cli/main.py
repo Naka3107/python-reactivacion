@@ -1,21 +1,23 @@
+import sqlite3
 from bolsa import Oferta, Programador, BolsaDeEmpleo
-from storage import guardar_ofertas, cargar_ofertas
 from validators import pedir_texto, pedir_entero, pedir_lista
-
-ARCHIVO = "ofertas.json"
+from database import guardar_programador, cargar_programadores, guardar_oferta, cargar_ofertas, inicializar_db
 
 def menu():
     bolsa = BolsaDeEmpleo()
+
+    conn = sqlite3.connect("buscador.db")
+    inicializar_db(conn)
+    bolsa.ofertas = cargar_ofertas(conn)
+    bolsa.programadores = cargar_programadores(conn)
     
     while True:
         print("\n=== Buscador de Empleo CLI ===")
         print("1. Añadir oferta")
-        print("2. Ver todas las ofertas")
+        print("2. Añadir programador")
         print("3. Buscar ofertas compatibles")
-        print("4. Guardar ofertas")
-        print("5. Cargar ofertas")
-        print("6. Añadir programador")
-        print("7. Salir")
+        print("4. Ver todas las ofertas")
+        print("5. Salir")
         
         opcion = input("\nElige una opción: ")
         
@@ -26,11 +28,22 @@ def menu():
             salario = pedir_entero("\nDame el salario: ")
             tecnologias = pedir_lista("\nDame las tecnologias que piden en la oferta: ")
             pais = pedir_texto("\nDame el nombre del país donde está la oferta: ")
-            bolsa.agregar_oferta(Oferta(empresa, puesto, salario, tecnologias),pais)
+            oferta = Oferta(empresa, puesto, salario, tecnologias)
+            bolsa.agregar_oferta(oferta, pais)
+
+            guardar_oferta(oferta, conn)
+            conn.commit()
+
         elif opcion == "2":
-            # recorre bolsa.ofertas y llama a oferta.mostrar()
-            for oferta in bolsa.ofertas:
-                oferta.mostrar()
+            # añade programadores a la bolsa
+            nombre = pedir_texto("\nDame el nombre del programador: ")
+            ciudad = pedir_texto("\nDame la ciudad donde vive el programador: ")
+            tecnologias = pedir_lista("\nDame las tecnologias que maneja el programador: ")
+            años_experiencia = pedir_entero("\nDame cuántos años de experiencia tiene el programador: ")
+            prog = Programador(nombre, ciudad, tecnologias, años_experiencia)
+            bolsa.agregar_programador(prog)
+            guardar_programador(prog, conn)
+            conn.commit()
             
         elif opcion == "3":
             nombre = pedir_texto("\nDame el nombre del programador: ")
@@ -43,25 +56,15 @@ def menu():
                 for resultado in resultados:
                     print(f"✓ {resultado['datos_oferta'].empresa} | {resultado['datos_oferta'].salario}€ | coincide en: {resultado['coincidencias']}")  
             # pide tecnologias y salario minimo, crea Programador y llama a buscar_ofertas
-             
+                
         elif opcion == "4":
-            # llama a guardar_ofertas
-            guardar_ofertas(bolsa.ofertas, "ofertas.json")
-             
+            # recorre bolsa.ofertas y llama a oferta.mostrar()
+            for oferta in bolsa.ofertas:
+                oferta.mostrar()
+
         elif opcion == "5":
-            # llama a cargar_ofertas y asigna a bolsa.ofertas
-            bolsa.ofertas = cargar_ofertas("ofertas.json")
-            
-        elif opcion == "6":
-            # añade programadores a la bolsa
-            programador = pedir_texto("\nDame el nombre del programador: ")
-            ciudad = pedir_texto("\nDame la ciudad donde vive el programador: ")
-            tecnologias = pedir_lista("\nDame las tecnologias que maneja el programador: ")
-            años_experiencia = pedir_entero("\nDame cuántos años de experiencia tiene el programador: ")
-            bolsa.agregar_programador(Programador(programador, ciudad, tecnologias, años_experiencia))
-            
-        elif opcion == "7":
             print("¡Hasta luego!")
+            conn.close()
             break
         else:
             print("Opción no válida")
