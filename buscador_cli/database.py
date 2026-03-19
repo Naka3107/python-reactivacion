@@ -102,6 +102,15 @@ def cargar_programadores(conn):
         programadores.append(Programador(programador[1],programador[2],tecnologias,programador[3]))
     return programadores
 
+def resetear_db(conn):
+    conn.executescript("""
+        DROP TABLE IF EXISTS tecnologias_oferta;
+        DROP TABLE IF EXISTS tecnologias_programador;
+        DROP TABLE IF EXISTS ofertas;
+        DROP TABLE IF EXISTS programadores;
+    """)
+    conn.commit()
+    
 # conn = sqlite3.connect("buscador.db")
 # inicializar_db(conn)
 # #guardar_oferta(Oferta("Raona", "Python Dev", 26000, ["Python", "Git"],"Germany","Berlin"),conn)
