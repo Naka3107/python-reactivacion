@@ -1,4 +1,4 @@
-from flask  import Flask, jsonify, request
+from flask  import Flask, jsonify, render_template, request
 import sqlite3
 import sys
 sys.path.append(".")
@@ -12,7 +12,8 @@ def get_conn():
     
 @app.route("/")
 def iniciar():
-    return "API corriendo"
+    return render_template("index.html")
+
 
 @app.route("/ofertas", methods=["GET"])
 def get_ofertas():
@@ -81,7 +82,7 @@ def get_compatibles(nombre, salario_minimo):
     # return jsonify(lista_final)
 
     return jsonify ([{
-        "oferta" : vars(r["datos_oferta"]),        # Cambia el objeto a diccionario y lo guarda
+        "datos_oferta" : vars(r["datos_oferta"]),        # Cambia el objeto a diccionario y lo guarda
         "coincidencias": r["coincidencias"]
     } for r in resultados])
     

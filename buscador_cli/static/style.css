@@ -1,0 +1,179 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=IBM+Plex+Mono:wght@300;400;500&display=swap');
+ 
+:root {
+    --black: #0a0a0a;
+    --dark: #111111;
+    --panel: #161616;
+    --border: #2a2a2a;
+    --gold: #c9a84c;
+    --gold-light: #e8c97a;
+    --gold-dim: #8a6f2e;
+    --green: #00c853;
+    --white: #f0ece0;
+    --muted: #555;
+}
+ 
+* { margin: 0; padding: 0; box-sizing: border-box; }
+ 
+body {
+    background-color: var(--black);
+    color: var(--white);
+    font-family: 'IBM Plex Mono', monospace;
+    min-height: 100vh;
+    background-image: repeating-linear-gradient(
+        0deg, transparent, transparent 40px,
+        rgba(201, 168, 76, 0.02) 40px, rgba(201, 168, 76, 0.02) 41px
+    );
+}
+ 
+h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 32px;
+    font-weight: 900;
+    color: var(--gold);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    padding: 32px 48px 8px;
+}
+ 
+p {
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    padding: 8px 48px 28px;
+    border-bottom: 1px solid var(--border);
+}
+ 
+#ofertas-container {
+    padding: 32px 48px;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    margin-bottom: 16px;
+}
+ 
+#ofertas-container h3 {
+    font-size: 10px;
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+    color: var(--gold-dim);
+    margin-bottom: 16px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--border);
+    font-family: 'IBM Plex Mono', monospace;
+    font-weight: 400;
+}
+ 
+#ofertas-container > div {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--gold-dim);
+    padding: 18px 24px;
+    transition: all 0.15s ease;
+    animation: fadeIn 0.4s ease forwards;
+    opacity: 0;
+}
+ 
+#ofertas-container > div:hover {
+    border-left-color: var(--gold);
+    background: #1a1a1a;
+    transform: translateX(4px);
+}
+ 
+#ofertas-container > div h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 16px;
+    color: var(--white);
+    font-weight: 700;
+    letter-spacing: 0;
+    text-transform: none;
+    border: none;
+    margin: 0 0 6px;
+    padding: 0;
+}
+ 
+#ofertas-container > div p {
+    font-size: 11px;
+    color: var(--muted);
+    padding: 0;
+    margin: 0;
+    letter-spacing: 0.05em;
+    text-transform: none;
+    border: none;
+}
+ 
+#buscador {
+    padding: 28px 48px;
+    background: var(--dark);
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    gap: 16px;
+    align-items: center;
+}
+ 
+#nombre, #salario_minimo {
+    background: var(--black);
+    border: 1px solid var(--border);
+    color: var(--white);
+    padding: 12px 14px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 13px;
+    outline: none;
+    transition: border-color 0.15s;
+    flex: 1;
+}
+ 
+#nombre:focus, #salario_minimo:focus { border-color: var(--gold-dim); }
+#nombre::placeholder, #salario_minimo::placeholder { color: #333; }
+ 
+button {
+    background: var(--gold);
+    color: var(--black);
+    border: none;
+    padding: 12px 28px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: background 0.15s;
+}
+ 
+button:hover { background: var(--gold-light); }
+button:active { background: var(--gold-dim); }
+ 
+#resultados {
+    padding: 32px 48px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+ 
+#resultados > div {
+    background: var(--panel);
+    border: 1px solid var(--gold-dim);
+    padding: 18px 24px;
+    animation: fadeIn 0.3s ease forwards;
+    opacity: 0;
+}
+ 
+#resultados h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 15px;
+    color: var(--gold);
+    margin-bottom: 6px;
+}
+ 
+#resultados p {
+    font-size: 11px;
+    color: var(--green);
+    padding: 0;
+    border: none;
+    letter-spacing: 0.05em;
+    text-transform: none;
+}
+ 
+@keyframes fadeIn { to { opacity: 1; } }

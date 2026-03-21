@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Título de la página</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <h1>Bienvenido a la página de ofertas</h1>
+    <p>Aquí puedes buscar ofertas de empleo.</p>
+    <div id="ofertas-container">
+        <h3>Ofertas disponibles:</h3>
+        <!-- Aquí se mostrarán las ofertas -->
+    </div>
+    <div id="buscador">
+        <input type="text" id="nombre" placeholder="Nombre del programador">
+        <input type="number" id="salario_minimo" placeholder="Salario mínimo">
+        <button onclick="buscarCompatibles()">Buscar Ofertas</button>
+    </div>
+    <div id="resultados">
+
+    </div>
+    <script>
+        // Aquí va tu JS para llamar a la API
+        fetch("/ofertas")
+            .then(res => res.json())
+            .then(datos => {
+            const contenedor = document.getElementById("ofertas-container")
+            datos.forEach(oferta => {
+                const div = document.createElement("div")
+                div.innerHTML = `<h3>${oferta.empresa}</h3><p>${oferta.puesto} | ${oferta.salario}€</p>`
+                contenedor.appendChild(div)
+                })
+            })
+
+        function buscarCompatibles() {
+            const nombre = document.getElementById("nombre").value
+            const salario = document.getElementById("salario_minimo").value
+            fetch(`/ofertas/compatibles/${nombre}/${salario}`)
+                .then(res => {
+                    if(res.status == 404) {
+                        alert("Programador no encontrado")
+                        return null
+                    }
+                    return res.json()
+                })
+                .then(datos => {
+                    if(!datos) return
+                    const contenedor = document.getElementById("resultados")
+                    contenedor.innerHTML = "<h2>Ofertas compatibles:</h2>" // Limpiar resultados anteriores
+                    datos.forEach(oferta => {
+                        const div = document.createElement("div")
+                        div.innerHTML = `<h3>Oferta compatible: ${oferta["datos_oferta"]["empresa"]}</h3><p> Coincidencias: ${oferta["coincidencias"]}</p>`
+                        contenedor.appendChild(div)
+                        }) // por ahora en consola
+                })
+        }
+    </script>
+</body>
+</html>
